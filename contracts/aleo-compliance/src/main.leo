@@ -22,4 +22,16 @@ program compliance.aleo {
         return lat_ok && lng_ok;
     }
 
+    transition verify_device_credentials(
+        private uptime_pct: u64,
+        private hashrate: u64,
+        public min_uptime: u64,
+        public min_hashrate: u64,
+        private device_id: field,
+    ) -> bool {
+        let uptime_ok: bool = uptime_pct >= min_uptime;
+        let hashrate_ok: bool = hashrate >= min_hashrate;
+        return uptime_ok && hashrate_ok;
+    }
+
 }
