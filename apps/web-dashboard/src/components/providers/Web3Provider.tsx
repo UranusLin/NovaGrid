@@ -3,6 +3,13 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { injected } from 'wagmi/connectors';
+import { useMemo } from 'react';
+import { AleoWalletProvider } from '@provablehq/aleo-wallet-adaptor-react';
+import { WalletModalProvider } from '@provablehq/aleo-wallet-adaptor-react-ui';
+import '@provablehq/aleo-wallet-adaptor-react-ui/dist/styles.css';
+import { Network } from '@provablehq/aleo-types';
+import { DecryptPermission } from '@provablehq/aleo-wallet-adaptor-core';
+import { ShieldWalletAdapter } from '@provablehq/aleo-wallet-adaptor-shield';
 
 // Fhenix Helium testnet configuration
 const fhenixHelium = {
@@ -26,11 +33,22 @@ const wagmiConfig = createConfig({
 const queryClient = new QueryClient();
 
 export function Web3Provider({ children }: { children: React.ReactNode }) {
+  const wallets = useMemo(() => [new ShieldWalletAdapter()], []);
+
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        {/* Shield Wallet provider will be added here once package is confirmed */}
-        {children}
+        <AleoWalletProvider
+          wallets={wallets}
+          network={Network.TESTNET}
+          decryptPermission={DecryptPermission.UponRequest}
+          autoConnect={false}
+          onError={(error: Error) => console.error('Wallet error:', error)}
+        >
+          <WalletModalProvider>
+            {children}
+          </WalletModalProvider>
+        </AleoWalletProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
