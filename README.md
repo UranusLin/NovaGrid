@@ -109,6 +109,7 @@ leo deploy --network testnet --private-key $ALEO_PRIVATE_KEY
 
 | Version | Description |
 |---|---|
+| v0.3.1 | Shield Wallet integration (required for Aleo competition) |
 | v0.3.0 | Aleo module complete: Leo program + Next.js frontend + Web Worker proof generation |
 | v0.2.0 | Monorepo root scaffold |
 | v0.1.0 | Project init, design specs, competition docs |
