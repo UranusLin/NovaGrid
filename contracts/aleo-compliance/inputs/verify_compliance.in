@@ -1,0 +1,13 @@
+// Device at Taipei (25.033°N, 121.565°E), inside Taiwan bounding box
+[verify_compliance]
+device: DeviceLocation = DeviceLocation {
+    lat: 25033000u64,
+    lng: 121565000u64
+};
+region: RegionBounds = RegionBounds {
+    min_lat: 21900000u64,
+    max_lat: 25300000u64,
+    min_lng: 120000000u64,
+    max_lng: 122000000u64
+};
+device_id: field = 12345field;

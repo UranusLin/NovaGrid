@@ -1,0 +1,13 @@
+// Device at Tokyo (35.689°N, 139.692°E), outside Taiwan bounding box
+[verify_compliance]
+device: DeviceLocation = DeviceLocation {
+    lat: 35689000u64,
+    lng: 139692000u64
+};
+region: RegionBounds = RegionBounds {
+    min_lat: 21900000u64,
+    max_lat: 25300000u64,
+    min_lng: 120000000u64,
+    max_lng: 122000000u64
+};
+device_id: field = 12345field;

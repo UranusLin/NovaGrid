@@ -17,7 +17,9 @@ program compliance.aleo {
         public region: RegionBounds,
         private device_id: field,
     ) -> bool {
-        return true;
+        let lat_ok: bool = device.lat >= region.min_lat && device.lat <= region.max_lat;
+        let lng_ok: bool = device.lng >= region.min_lng && device.lng <= region.max_lng;
+        return lat_ok && lng_ok;
     }
 
 }
