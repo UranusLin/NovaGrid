@@ -25,13 +25,27 @@ type WorkerMessage =
       };
     };
 
-// Initialize SDK once at worker startup
-let programManager: InstanceType<typeof import('@demox-labs/aleo-sdk').ProgramManager> | null = null;
+interface ProgramExecutor {
+  executeOffline(
+    program: string,
+    transition: string,
+    inputs: string[],
+    feeCredits: boolean,
+  ): Promise<{ getOutputs(): string[] }>;
+}
 
-async function getPM() {
+interface AleoSDKModule {
+  ProgramManager: new () => ProgramExecutor;
+  default?: () => Promise<void>;
+}
+
+// Initialize SDK once at worker startup
+let programManager: ProgramExecutor | null = null;
+
+async function getPM(): Promise<ProgramExecutor> {
   if (programManager) return programManager;
-  const sdk = await import('@demox-labs/aleo-sdk');
-  if (sdk.default && typeof sdk.default === 'function') {
+  const sdk = (await import('@demox-labs/aleo-sdk')) as unknown as AleoSDKModule;
+  if (typeof sdk.default === 'function') {
     await sdk.default();
   }
   programManager = new sdk.ProgramManager();
