@@ -34,4 +34,22 @@ program compliance.aleo {
         return uptime_ok && hashrate_ok;
     }
 
+    // Combines location and operational compliance into a trust score for reward weighting.
+    // Score range: 40–100 (40 = minimum pass, 100 = perfect node)
+    // Formula: 40 base + 30% * uptime_pct + 30% * hashrate_score
+    transition compute_node_score(
+        private location_ok: bool,
+        private ops_ok: bool,
+        private uptime_pct: u64,
+        private hashrate_score: u64,
+        private device_id: field,
+    ) -> u64 {
+        assert(location_ok);
+        assert(ops_ok);
+        let uptime_weight: u64 = uptime_pct * 30u64 / 100u64;
+        let hashrate_weight: u64 = hashrate_score * 30u64 / 100u64;
+        let score: u64 = 40u64 + uptime_weight + hashrate_weight;
+        return score;
+    }
+
 }

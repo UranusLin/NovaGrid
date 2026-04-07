@@ -1,0 +1,8 @@
+// uptime=95 → 95*30/100=28, hashrate_score=80 → 80*30/100=24
+// Expected output: 40 + 28 + 24 = 92
+[compute_node_score]
+location_ok: bool = true;
+ops_ok: bool = true;
+uptime_pct: u64 = 95u64;
+hashrate_score: u64 = 80u64;
+device_id: field = 12345field;
