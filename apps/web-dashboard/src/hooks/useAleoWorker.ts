@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { RegionId } from '@/lib/constants';
+import { normalizeHashrate } from '@/lib/aleo';
 
 export type ProofStep = 'idle' | 'location' | 'credentials' | 'score' | 'done' | 'error';
 
@@ -35,6 +36,7 @@ export type GenerateProofParams = {
 export function useAleoWorker() {
   const workerRef = useRef<Worker | null>(null);
   const paramsRef = useRef<GenerateProofParams | null>(null);
+  const isRunningRef = useRef(false);
   const [state, setState] = useState<ProofState>(INITIAL_STATE);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export function useAleoWorker() {
 
         case 'COMPLIANCE_RESULT': {
           const compliant = msg.compliant as boolean;
+          if (!compliant) isRunningRef.current = false;
           setState((prev) => ({
             ...prev,
             locationOk: compliant,
@@ -77,6 +80,7 @@ export function useAleoWorker() {
 
         case 'CREDENTIALS_RESULT': {
           const credentialsOk = msg.credentialsOk as boolean;
+          if (!credentialsOk) isRunningRef.current = false;
           setState((prev) => ({
             ...prev,
             credentialsOk,
@@ -86,7 +90,7 @@ export function useAleoWorker() {
               : '✗ Device does not meet operational thresholds.',
           }));
           if (credentialsOk && params) {
-            const hashrateScore = Math.min(100, Math.round((params.hashrate / 1000) * 100));
+            const hashrateScore = Number(normalizeHashrate(params.hashrate));
             workerRef.current?.postMessage({
               type: 'COMPUTE_SCORE',
               payload: {
@@ -103,6 +107,7 @@ export function useAleoWorker() {
 
         case 'SCORE_RESULT': {
           const score = msg.score as number;
+          isRunningRef.current = false;
           setState((prev) => ({
             ...prev,
             trustScore: score,
@@ -113,6 +118,7 @@ export function useAleoWorker() {
         }
 
         case 'ERROR':
+          isRunningRef.current = false;
           setState((prev) => ({
             ...prev,
             step: 'error',
@@ -132,6 +138,8 @@ export function useAleoWorker() {
   }, []);
 
   const generateFullProof = useCallback((params: GenerateProofParams) => {
+    if (isRunningRef.current) return;
+    isRunningRef.current = true;
     paramsRef.current = params;
     setState({ ...INITIAL_STATE, step: 'location', statusMessage: 'Starting proof generation...' });
     workerRef.current?.postMessage({
@@ -146,6 +154,7 @@ export function useAleoWorker() {
   }, []);
 
   const reset = useCallback(() => {
+    isRunningRef.current = false;
     paramsRef.current = null;
     setState(INITIAL_STATE);
   }, []);

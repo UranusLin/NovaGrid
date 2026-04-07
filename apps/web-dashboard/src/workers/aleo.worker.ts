@@ -25,20 +25,37 @@ type WorkerMessage =
       };
     };
 
-async function getProgramManager() {
+// Initialize SDK once at worker startup
+let programManager: InstanceType<typeof import('@demox-labs/aleo-sdk').ProgramManager> | null = null;
+
+async function getPM() {
+  if (programManager) return programManager;
   const sdk = await import('@demox-labs/aleo-sdk');
   if (sdk.default && typeof sdk.default === 'function') {
     await sdk.default();
   }
-  return sdk.ProgramManager;
+  programManager = new sdk.ProgramManager();
+  return programManager;
+}
+
+// Parse and validate a u64 output from Aleo SDK (e.g. "92u64")
+function parseU64Output(outputs: string[]): number {
+  if (!outputs || outputs.length === 0) {
+    throw new Error('Aleo SDK returned no outputs');
+  }
+  const raw = outputs[0];
+  const match = raw.match(/^(\d+)u64$/);
+  if (!match) {
+    throw new Error(`Unexpected output format from Aleo SDK: "${raw}"`);
+  }
+  return parseInt(match[1], 10);
 }
 
 self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
   const { type, payload } = event.data;
 
   try {
-    const ProgramManager = await getProgramManager();
-    const pm = new ProgramManager();
+    const pm = await getPM();
 
     if (type === 'VERIFY_COMPLIANCE') {
       self.postMessage({ type: 'STATUS', message: 'Verifying location...' });
@@ -49,21 +66,16 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
         `${payload.deviceId}field`,
       ];
 
-      const result = await pm.executeOffline(
-        'compliance.aleo',
-        'verify_compliance',
-        inputs,
-        false,
-      );
-
+      const result = await pm.executeOffline('compliance.aleo', 'verify_compliance', inputs, false);
       const outputs = result.getOutputs();
-      const compliant = outputs[0] === 'true';
+      const compliant = Array.isArray(outputs) && outputs[0] === 'true';
       self.postMessage({ type: 'COMPLIANCE_RESULT', compliant });
     }
 
     if (type === 'VERIFY_CREDENTIALS') {
       self.postMessage({ type: 'STATUS', message: 'Verifying credentials...' });
 
+      // Uses raw hashrate compared against raw threshold (both in same units: TH/s)
       const inputs = [
         `${BigInt(Math.round(payload.uptimePct))}u64`,
         `${BigInt(Math.round(payload.hashrate))}u64`,
@@ -72,21 +84,16 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
         `${payload.deviceId}field`,
       ];
 
-      const result = await pm.executeOffline(
-        'compliance.aleo',
-        'verify_device_credentials',
-        inputs,
-        false,
-      );
-
+      const result = await pm.executeOffline('compliance.aleo', 'verify_device_credentials', inputs, false);
       const outputs = result.getOutputs();
-      const credentialsOk = outputs[0] === 'true';
+      const credentialsOk = Array.isArray(outputs) && outputs[0] === 'true';
       self.postMessage({ type: 'CREDENTIALS_RESULT', credentialsOk });
     }
 
     if (type === 'COMPUTE_SCORE') {
       self.postMessage({ type: 'STATUS', message: 'Computing trust score...' });
 
+      // hashrateScore is 0-100 normalized score (different from raw hashrate in VERIFY_CREDENTIALS)
       const inputs = [
         payload.locationOk ? 'true' : 'false',
         payload.opsOk ? 'true' : 'false',
@@ -95,19 +102,12 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
         `${payload.deviceId}field`,
       ];
 
-      const result = await pm.executeOffline(
-        'compliance.aleo',
-        'compute_node_score',
-        inputs,
-        false,
-      );
-
-      const outputs = result.getOutputs();
-      const scoreStr = outputs[0] ?? '0u64';
-      const score = parseInt(scoreStr.replace('u64', ''), 10);
+      const result = await pm.executeOffline('compliance.aleo', 'compute_node_score', inputs, false);
+      const score = parseU64Output(result.getOutputs());
       self.postMessage({ type: 'SCORE_RESULT', score });
     }
   } catch (err) {
-    self.postMessage({ type: 'ERROR', message: (err as Error).message });
+    const message = err instanceof Error ? err.message : String(err);
+    self.postMessage({ type: 'ERROR', message });
   }
 };
