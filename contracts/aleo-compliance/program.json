@@ -1,0 +1,6 @@
+{
+  "program": "compliance.aleo",
+  "version": "0.1.0",
+  "description": "ZK compliance verification for DePIN device locations and credentials",
+  "license": "MIT"
+}
