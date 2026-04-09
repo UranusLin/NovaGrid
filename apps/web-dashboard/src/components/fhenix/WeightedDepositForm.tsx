@@ -73,7 +73,8 @@ export function WeightedDepositForm() {
           account: address!,
           chain: sepolia,
         },
-        args: [operator as `0x${string}`, Encryptable.uint32(BigInt(parsedAmount)), BigInt(trustScore)],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        args: [operator as `0x${string}`, Encryptable.uint32(BigInt(parsedAmount)), BigInt(trustScore)] as any,
       });
       setTxHash(hash as `0x${string}`);
       setBaseAmount('');

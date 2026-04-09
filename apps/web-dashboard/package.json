@@ -9,10 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cofhe/abi": "^0.4.0",
     "@cofhe/react": "^0.4.0",
     "@cofhe/sdk": "^0.4.0",
     "@demox-labs/aleo-sdk": "^1.0.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@headlessui/react": "^2.2.9",
+    "@mui/icons-material": "^5.18.0",
+    "@mui/material": "^5.18.0",
     "@provablehq/aleo-types": "^0.3.0-alpha.3",
     "@provablehq/aleo-wallet-adaptor-core": "^0.3.0-alpha.3",
     "@provablehq/aleo-wallet-adaptor-react": "^0.3.0-alpha.3",

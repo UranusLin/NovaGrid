@@ -50,7 +50,8 @@ export function ClaimForm() {
           account: address!,
           chain: sepolia,
         },
-        args: [Encryptable.uint32(BigInt(parsed))],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        args: [Encryptable.uint32(BigInt(parsed))] as any,
       });
       setTxHash(hash as `0x${string}`);
       setAmount('');

@@ -1,7 +1,14 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import dynamic from 'next/dynamic';
 import './globals.css';
-import { Web3Provider } from '@/components/providers/Web3Provider';
+
+// CoFHE and Aleo SDK access window/navigator at module init — must be client-only.
+// dynamic({ ssr: false }) ensures none of the Web3 provider code runs on the server.
+const Web3Provider = dynamic(
+  () => import('@/components/providers/Web3Provider').then((m) => ({ default: m.Web3Provider })),
+  { ssr: false }
+);
 
 const inter = Inter({ subsets: ['latin'] });
 
