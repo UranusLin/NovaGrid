@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cofhe/react": "^0.4.0",
+    "@cofhe/sdk": "^0.4.0",
     "@demox-labs/aleo-sdk": "^1.0.0",
     "@headlessui/react": "^2.2.9",
     "@provablehq/aleo-types": "^0.3.0-alpha.3",

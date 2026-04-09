@@ -108,6 +108,13 @@ export function useAleoWorker() {
         case 'SCORE_RESULT': {
           const score = msg.score as number;
           isRunningRef.current = false;
+          // Persist trust score to localStorage so the dashboard and rewards page can read it
+          try {
+            localStorage.setItem('novagrid:zkTrustScore', String(score));
+            localStorage.setItem('novagrid:zkScoreTimestamp', Date.now().toString());
+          } catch {
+            // localStorage may be unavailable in some environments
+          }
           setState((prev) => ({
             ...prev,
             trustScore: score,
