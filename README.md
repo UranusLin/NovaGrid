@@ -113,11 +113,23 @@ leo deploy --network testnet --endpoint https://api.explorer.provable.com/v1 --p
 
 | Version | Description |
 |---|---|
+| v0.5.0 | Fhenix FHE contracts complete: NovaVault + RewardDistributor, 8/8 tests pass |
 | v0.4.0 | compliance.aleo deployed to Aleo Testnet (TX: at1pzqn6ea...0dkca) |
 | v0.3.1 | Shield Wallet integration (required for Aleo competition) |
 | v0.3.0 | Aleo module complete: Leo program + Next.js frontend + Web Worker proof generation |
 | v0.2.0 | Monorepo root scaffold |
 | v0.1.0 | Project init, design specs, competition docs |
+
+## Fhenix Testnet Deployment
+
+```bash
+# Fund deployer address with Sepolia ETH first (see faucet instructions below)
+# Deployer: 0x8BA9Ed59315cd272A43C4501Aa19450921dB441b
+cd contracts/fhenix-settlement
+npm run deploy:sepolia    # deploy to Ethereum Sepolia
+# or
+npm run deploy:arb        # deploy to Arbitrum Sepolia
+```
 
 ## Competitions
 
