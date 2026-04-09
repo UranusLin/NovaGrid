@@ -1,6 +1,6 @@
 // Compliance verification program for DePIN hardware nodes.
-// Transitions are designed to be chained: verify_compliance → verify_device_credentials → compute_node_score.
-// Callers must honestly provide the boolean outputs of the first two transitions as inputs to compute_node_score.
+// Functions are designed to be chained: verify_compliance → verify_device_credentials → compute_node_score.
+// Callers must honestly provide the boolean outputs of the first two functions as inputs to compute_node_score.
 program compliance.aleo {
 
     struct DeviceLocation {
@@ -15,7 +15,10 @@ program compliance.aleo {
         max_lng: u64,
     }
 
-    transition verify_compliance(
+    @noupgrade
+    constructor() {}
+
+    fn verify_compliance(
         private device: DeviceLocation,
         public region: RegionBounds,
         private device_id: field,    // binds this proof to a specific device identity
@@ -25,7 +28,7 @@ program compliance.aleo {
         return lat_ok && lng_ok;
     }
 
-    transition verify_device_credentials(
+    fn verify_device_credentials(
         private uptime_pct: u64,
         private hashrate: u64,
         public min_uptime: u64,
@@ -40,7 +43,7 @@ program compliance.aleo {
     // Combines location and operational compliance into a trust score for reward weighting.
     // Score range: 40–100 (40 = minimum pass, 100 = perfect node)
     // Formula: 40 base + 30% * uptime_pct + 30% * hashrate_score
-    transition compute_node_score(
+    fn compute_node_score(
         private location_ok: bool,
         private ops_ok: bool,
         private uptime_pct: u64,

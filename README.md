@@ -92,8 +92,12 @@ Expected outputs: `true`, `true`, `92u64`
 
 ```bash
 cd contracts/aleo-compliance
-leo deploy --network testnet --private-key $ALEO_PRIVATE_KEY
+leo deploy --network testnet --endpoint https://api.explorer.provable.com/v1 --private-key $ALEO_PRIVATE_KEY --broadcast --yes
 ```
+
+**Deployed:** `compliance.aleo` on Aleo Testnet  
+**Deploy TX:** `at1pzqn6ea2gh9sne39fg20896rkhgevnvkqyda7wt84j58wz4c8grqs0dkca`  
+**Address:** `aleo173cytqrq75ahm8t9l72kp3cr3uded75ac23xvylyks0eztt7hygq49w386`
 
 ## Privacy Model
 
@@ -109,6 +113,7 @@ leo deploy --network testnet --private-key $ALEO_PRIVATE_KEY
 
 | Version | Description |
 |---|---|
+| v0.4.0 | compliance.aleo deployed to Aleo Testnet (TX: at1pzqn6ea...0dkca) |
 | v0.3.1 | Shield Wallet integration (required for Aleo competition) |
 | v0.3.0 | Aleo module complete: Leo program + Next.js frontend + Web Worker proof generation |
 | v0.2.0 | Monorepo root scaffold |
