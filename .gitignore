@@ -49,3 +49,4 @@ coverage/
 # Misc
 .vercel
 *.pem
+contracts/fhenix-settlement/.env

@@ -16,18 +16,18 @@ const config: HardhatUserConfig = {
       },
     },
   },
-  // eth-sepolia and arb-sepolia are auto-injected by @cofhe/hardhat-plugin.
-  // We only define custom/override networks here.
+  // eth-sepolia and arb-sepolia RPCs are auto-injected by @cofhe/hardhat-plugin.
+  // We override only to add accounts and ensure the RPC matches the plugin default.
   networks: {
     ...(PRIVATE_KEY
       ? {
           "eth-sepolia": {
-            url: "https://rpc.sepolia.org",
+            url: process.env.SEPOLIA_RPC_URL ?? "https://ethereum-sepolia.publicnode.com",
             accounts: [PRIVATE_KEY],
             chainId: 11155111,
           },
           "arb-sepolia": {
-            url: "https://sepolia-rollup.arbitrum.io/rpc",
+            url: process.env.ARBITRUM_SEPOLIA_RPC_URL ?? "https://sepolia-rollup.arbitrum.io/rpc",
             accounts: [PRIVATE_KEY],
             chainId: 421614,
           },
