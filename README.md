@@ -113,6 +113,7 @@ leo deploy --network testnet --endpoint https://api.explorer.provable.com/v1 --p
 
 | Version | Description |
 |---|---|
+| v0.6.0 | FHE rewards dashboard: CoFHE integration, encrypted balances, ZK→FHE bridge UI |
 | v0.5.1 | NovaVault + RewardDistributor deployed to Ethereum Sepolia |
 | v0.5.0 | Fhenix FHE contracts complete: NovaVault + RewardDistributor, 8/8 tests pass |
 | v0.4.0 | compliance.aleo deployed to Aleo Testnet (TX: at1pzqn6ea...0dkca) |
