@@ -1,0 +1,25 @@
+{
+  "name": "@novagrid/hardware-relayer",
+  "version": "0.1.0",
+  "description": "Hardware relayer service: receives device metrics, generates Aleo ZK proofs, submits to Fhenix RewardDistributor",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "viem": "^2.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}

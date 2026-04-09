@@ -1,22 +1,31 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useChainId, useSwitchChain, useWaitForTransactionReceipt } from 'wagmi';
 import { sepolia } from 'viem/chains';
 import { useCofheEncryptAndWriteContract } from '@cofhe/react';
 import { Encryptable } from '@cofhe/sdk';
 import { REWARD_DISTRIBUTOR_ABI, REWARD_DISTRIBUTOR_ADDRESS } from '@/lib/contracts';
+import { humanizeFheError } from '@/lib/fheErrors';
 
 export function WeightedDepositForm() {
   const { address, isConnected } = useAccount();
+  const chainId = useChainId();
+  const { switchChain, isPending: isSwitching } = useSwitchChain();
   const [operator, setOperator] = useState('');
   const [baseAmount, setBaseAmount] = useState('');
   const [trustScore, setTrustScore] = useState<number | null>(null);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [txHash, setTxHash] = useState<`0x${string}` | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
   const { encryptAndWrite, encryption, write } = useCofheEncryptAndWriteContract();
 
+  // Poll for confirmation after submission
+  const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({
+    hash: txHash ?? undefined,
+  });
+
+  const isWrongNetwork = isConnected && chainId !== sepolia.id;
   const isLoading = encryption.isPending || write.isPending;
 
   // Pre-fill operator with connected address
@@ -66,10 +75,10 @@ export function WeightedDepositForm() {
         },
         args: [operator as `0x${string}`, Encryptable.uint32(BigInt(parsedAmount)), BigInt(trustScore)],
       });
-      setTxHash(hash);
+      setTxHash(hash as `0x${string}`);
       setBaseAmount('');
     } catch (err) {
-      setFormError(err instanceof Error ? err.message : String(err));
+      setFormError(humanizeFheError(err));
     }
   }
 
@@ -78,6 +87,23 @@ export function WeightedDepositForm() {
       <p className="text-center text-sm text-gray-500">
         Connect your wallet to use the admin demo.
       </p>
+    );
+  }
+
+  if (isWrongNetwork) {
+    return (
+      <div className="text-center">
+        <p className="mb-3 text-sm text-yellow-400">
+          Switch to Ethereum Sepolia to submit FHE transactions.
+        </p>
+        <button
+          onClick={() => switchChain({ chainId: sepolia.id })}
+          disabled={isSwitching}
+          className="rounded-lg border border-yellow-700 bg-yellow-900/20 px-4 py-2 text-sm text-yellow-400 transition hover:bg-yellow-900/40 disabled:opacity-50"
+        >
+          {isSwitching ? 'Switching…' : 'Switch to Sepolia'}
+        </button>
+      </div>
     );
   }
 
@@ -150,25 +176,34 @@ export function WeightedDepositForm() {
       )}
 
       {txHash && (
-        <p className="rounded-lg bg-emerald-900/30 px-3 py-2 text-xs text-emerald-400">
-          Deposit submitted:{' '}
-          <a
-            href={`https://sepolia.etherscan.io/tx/${txHash}`}
-            target="_blank"
-            rel="noreferrer"
-            className="underline"
-          >
-            {txHash.slice(0, 12)}…
-          </a>
-        </p>
+        <div className="rounded-lg bg-emerald-900/30 px-3 py-2 text-xs text-emerald-400">
+          <div className="flex items-center justify-between">
+            <span>
+              {isConfirmed ? 'Deposit confirmed' : isConfirming ? 'Confirming…' : 'Deposit submitted'}
+            </span>
+            <a
+              href={`https://sepolia.etherscan.io/tx/${txHash}`}
+              target="_blank"
+              rel="noreferrer"
+              className="underline"
+            >
+              {txHash.slice(0, 12)}…
+            </a>
+          </div>
+          {isConfirmed && (
+            <p className="mt-1 text-emerald-500">
+              Reward deposited. Operator balance updated.
+            </p>
+          )}
+        </div>
       )}
 
       <button
         type="submit"
-        disabled={isLoading || trustScore === null}
+        disabled={isLoading || isConfirming || trustScore === null}
         className="w-full rounded-lg bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-600 disabled:opacity-50"
       >
-        {isLoading ? 'Processing…' : 'Weighted Deposit'}
+        {isLoading ? 'Processing…' : isConfirming ? 'Confirming…' : 'Weighted Deposit'}
       </button>
     </form>
   );

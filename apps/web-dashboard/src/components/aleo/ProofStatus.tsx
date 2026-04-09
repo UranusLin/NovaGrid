@@ -52,6 +52,20 @@ export function ProofStatus({ state }: Props) {
               <span className="font-bold text-emerald-400">{state.trustScore}/100</span>
             </div>
           )}
+          {/* ZK→FHE bridge CTA: guide user to use their trust score on Fhenix */}
+          {state.trustScore !== null && state.locationOk && state.credentialsOk && (
+            <div className="mt-3 rounded-lg border border-emerald-800/50 bg-emerald-900/20 px-4 py-3">
+              <p className="mb-2 text-xs text-emerald-400">
+                Trust score saved locally. Use it to weight your encrypted reward deposit on Fhenix.
+              </p>
+              <a
+                href="/rewards"
+                className="inline-flex items-center gap-1 rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-600"
+              >
+                Use Score in FHE Rewards →
+              </a>
+            </div>
+          )}
         </div>
       )}
 

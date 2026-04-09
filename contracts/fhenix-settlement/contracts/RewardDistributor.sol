@@ -7,7 +7,7 @@ import "./NovaVault.sol";
 
 /// @title RewardDistributor
 /// @notice Distributes encrypted rewards to DePIN node operators.
-/// Supports equal distribution and trust-score-weighted distribution.
+/// Supports equal distribution and trust-score-weighted distribution (single and batch).
 /// The trust score is the public output of the Aleo compute_node_score ZK transition —
 /// this is the cross-module bridge between the ZK layer (Aleo) and the FHE layer (Fhenix).
 contract RewardDistributor is Ownable {
@@ -42,12 +42,8 @@ contract RewardDistributor is Ownable {
         emit RewardsDistributed(operators, block.timestamp);
     }
 
-    /// @notice Distribute a trust-score-weighted encrypted reward to an operator.
-    /// @dev This is the ZK→FHE cross-module bridge:
-    ///   - baseAmount is encrypted (private) — provided by distributor
-    ///   - trustScore is public — sourced from the Aleo compute_node_score ZK proof output
-    ///   - weighted = baseAmount × trustScore (individual amounts remain private)
-    ///   High-score nodes earn more; no individual amounts are revealed on-chain.
+    /// @notice Distribute a trust-score-weighted encrypted reward to a single operator.
+    /// @dev ZK→FHE bridge: trustScore is public (from Aleo proof), baseAmount stays private.
     /// @param operator The operator receiving the reward
     /// @param baseAmount Client-encrypted base reward unit
     /// @param trustScore Public trust score from Aleo (range 40–100)
@@ -56,13 +52,46 @@ contract RewardDistributor is Ownable {
         InEuint32 memory baseAmount,
         uint64 trustScore
     ) external onlyOwner {
+        _distributeWeighted(operator, baseAmount, trustScore);
+    }
+
+    /// @notice Batch version: distribute trust-score-weighted rewards to multiple operators in one tx.
+    /// @dev Each operator receives baseAmounts[i] * trustScores[i] as an encrypted reward.
+    ///      All three arrays must be the same length.
+    /// @param operators List of operator addresses
+    /// @param baseAmounts List of client-encrypted base reward amounts (one per operator)
+    /// @param trustScores List of public trust scores from Aleo (one per operator, each 40–100)
+    function distributeWeightedRewardBatch(
+        address[] calldata operators,
+        InEuint32[] memory baseAmounts,
+        uint64[] calldata trustScores
+    ) external onlyOwner {
+        require(operators.length == baseAmounts.length, "RewardDistributor: length mismatch");
+        require(baseAmounts.length == trustScores.length, "RewardDistributor: score mismatch");
+        for (uint256 i = 0; i < operators.length; i++) {
+            _distributeWeighted(operators[i], baseAmounts[i], trustScores[i]);
+        }
+        emit RewardsDistributed(operators, block.timestamp);
+    }
+
+    // ─── Internal ────────────────────────────────────────────────────────────
+
+    /// @dev Core weighted-distribution logic.
+    ///   1. Validates trust score is in [40, 100]
+    ///   2. Encrypts the base amount and multiplies by the public trust score
+    ///   3. Grants ACL permissions so NovaVault can operate on the ciphertext
+    ///   4. Deposits into the vault
+    function _distributeWeighted(
+        address operator,
+        InEuint32 memory baseAmount,
+        uint64 trustScore
+    ) internal {
         require(
             trustScore >= TRUST_SCORE_MIN && trustScore <= TRUST_SCORE_MAX,
             "RewardDistributor: trustScore out of range [40,100]"
         );
         euint32 amount = FHE.asEuint32(baseAmount);
-        // Multiply the encrypted base amount by the public trust score.
-        // trustScore is public, amount stays encrypted — the weighted result is still private.
+        // trustScore is public — multiplying by it preserves the privacy of baseAmount.
         euint32 weighted = FHE.mul(amount, FHE.asEuint32(uint32(trustScore)));
         FHE.allowThis(weighted);
         FHE.allow(weighted, operator);
