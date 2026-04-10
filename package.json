@@ -3,15 +3,19 @@
   "private": true,
   "workspaces": [
     "apps/web-dashboard",
-    "apps/hardware-relayer",
+    "services/hardware-relayer",
     "contracts/fhenix-settlement"
   ],
   "scripts": {
-    "dev:web": "npm -w apps/web-dashboard run dev",
-    "dev:relayer": "npm -w apps/hardware-relayer run dev",
-    "build:web": "npm -w apps/web-dashboard run build",
-    "test:contracts": "npm -w contracts/fhenix-settlement run test",
-    "test:relayer": "npm -w apps/hardware-relayer run test"
+    "dev": "concurrently --names \"web,relayer\" --prefix-colors \"cyan,yellow\" \"npm run dev:web\" \"npm run dev:relayer\"",
+    "dev:web": "npm -w web-dashboard run dev",
+    "dev:relayer": "npm -w @novagrid/hardware-relayer run dev",
+    "build:web": "npm -w web-dashboard run build",
+    "test:contracts": "npm -w @novagrid/fhenix-settlement run test",
+    "test:all": "npm run test:contracts"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   },
   "engines": {
     "node": ">=18.0.0"
