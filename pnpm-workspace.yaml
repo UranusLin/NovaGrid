@@ -1,0 +1,13 @@
+packages:
+  - apps/web-dashboard
+  - services/hardware-relayer
+  - contracts/fhenix-settlement
+
+# Packages allowed to run install scripts (native bindings + contract build tools)
+onlyBuiltDependencies:
+  - '@fhenixprotocol/cofhe-contracts'
+  - bufferutil
+  - esbuild
+  - keccak
+  - secp256k1
+  - utf-8-validate

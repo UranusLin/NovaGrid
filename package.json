@@ -1,23 +1,31 @@
 {
   "name": "novagrid-monorepo",
   "private": true,
-  "workspaces": [
-    "apps/web-dashboard",
-    "services/hardware-relayer",
-    "contracts/fhenix-settlement"
-  ],
   "scripts": {
-    "dev": "concurrently --names \"web,relayer\" --prefix-colors \"cyan,yellow\" \"npm run dev:web\" \"npm run dev:relayer\"",
-    "dev:web": "npm -w web-dashboard run dev",
-    "dev:relayer": "npm -w @novagrid/hardware-relayer run dev",
-    "build:web": "npm -w web-dashboard run build",
-    "test:contracts": "npm -w @novagrid/fhenix-settlement run test",
-    "test:all": "npm run test:contracts"
+    "dev": "concurrently --names \"web,relayer\" --prefix-colors \"cyan,yellow\" \"pnpm dev:web\" \"pnpm dev:relayer\"",
+    "dev:web": "pnpm --filter web-dashboard run dev",
+    "dev:relayer": "pnpm --filter @novagrid/hardware-relayer run dev",
+    "build:web": "pnpm --filter web-dashboard run build",
+    "test:contracts": "pnpm --filter @novagrid/fhenix-settlement run test",
+    "test:all": "pnpm run test:contracts",
+    "lint": "pnpm --filter web-dashboard run lint"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.8.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@fhenixprotocol/cofhe-contracts",
+      "bufferutil",
+      "esbuild",
+      "keccak",
+      "secp256k1",
+      "utf-8-validate"
+    ]
   }
 }
