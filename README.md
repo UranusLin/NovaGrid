@@ -67,7 +67,8 @@ The layers connect: the ZK proof produces a public **trust score** (0–100) whi
   └── Wallet + Permit ──►  Fhenix FHE Contracts (Ethereum Sepolia)
                              ├── NovaVault           (euint32 encrypted balances)
                              ├── RewardDistributor   (trust_score weighted deposits)
-                             └── PrivacyLeaderboard  (FHE.lt encrypted ranking)
+                             ├── PrivacyLeaderboard  (FHE.lt encrypted ranking)
+                             └── SealedBidAuction    (FHE.gt max bid, FHE.eq win check)
 
 [Hardware Node]
   └── Telemetry ──► Hardware Relayer ──► 0G DA Storage
@@ -102,6 +103,7 @@ Solidity contracts on Ethereum Sepolia using `@cofhe/sdk`:
 | `NovaVault` | `0xF3bd6CA6bA7c2D413693322ab64868CB329F968f` | Encrypted reward balances (`euint32`), Permit-based access |
 | `RewardDistributor` | `0x27B1130bd453Da43E3b922B1AaB85f0a7252495F` | Trust-score weighted encrypted deposits |
 | `PrivacyLeaderboard` | `0xAd3710ba23753edd19d715F13254657137A367F4` | Private node ranking via `FHE.lt` comparisons |
+| `SealedBidAuction` | `0xFc6d429BF9f505281E86FeE965dE94704DAF22F8` | Sealed-bid slot auction — `FHE.gt` finds max, `FHE.eq` checks winner |
 
 **FHE operations used across contracts:**
 
@@ -113,6 +115,8 @@ Solidity contracts on Ethereum Sepolia using `@cofhe/sdk`:
 | `FHE.gte` | Underflow guard (balance ≥ claim amount) |
 | `FHE.lt` | Per-node encrypted comparison for ranking |
 | `FHE.select` | Encrypted conditional (if/else on `ebool`) |
+| `FHE.gt` | Find encrypted maximum bid across all bidders |
+| `FHE.eq` | Per-bidder encrypted win status check |
 
 ---
 
@@ -126,6 +130,7 @@ Next.js 15 (App Router):
 | `/dashboard` | Privacy layers status panel + module navigation |
 | `/compliance` | ZK proof generation (Aleo WASM, runs in browser) |
 | `/rewards` | FHE balance, claim, weighted deposit, private leaderboard |
+| `/auction` | Sealed-bid slot auction — encrypted bids, FHE max selection, private win status |
 | `/devices` | Device management and telemetry |
 
 ---
@@ -182,6 +187,14 @@ leo run compute_node_score --input inputs/compute_node_score.in
 4. Decrypt your rank with a permit — see how many nodes score below you
 5. *Key point:* Nobody sees anyone else's score. The comparison happens entirely in ciphertext.
 
+**Step 4 — Sealed Bid Auction**
+1. Open `/auction`, connect MetaMask on Ethereum Sepolia
+2. Enter a bid amount → click **Bid** — the amount is encrypted before submission
+3. Owner clicks **End Auction Early** then **Finalize Auction** — `FHE.gt` loop finds the encrypted maximum across all bids without decrypting any
+4. Click **Check Win Status** — `FHE.eq` compares your encrypted bid against the encrypted max
+5. Sign a permit to decrypt — see **Winner** or **Not selected** — losing amounts are never revealed
+6. *Key point:* No individual bid is ever decrypted. Winner selection happens entirely in ciphertext.
+
 ---
 
 ## Privacy Model
@@ -202,6 +215,7 @@ leo run compute_node_score --input inputs/compute_node_score.in
 
 | Version | Description |
 |---|---|
+| v1.0.0 | SealedBidAuction (FHE.gt max bid, FHE.eq win check), /auction page, 8 FHE ops total |
 | v0.9.0 | PrivacyLeaderboard (FHE.lt ranking), logo, navigation fixes |
 | v0.8.0 | Landing page, Navbar, Docker setup, privacy-layer positioning |
 | v0.7.0 | FHE underflow guard, batch distribute, hardware relayer, ZK→FHE bridge UI |

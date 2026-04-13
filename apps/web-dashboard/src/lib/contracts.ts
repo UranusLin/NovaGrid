@@ -171,3 +171,146 @@ export const PRIVACY_LEADERBOARD_ABI = [
     outputs: [{ name: '', type: 'uint256' }],
   },
 ] as const;
+
+// ── SealedBidAuction ──────────────────────────────────────────────────────
+export const SEALED_BID_AUCTION_ADDRESS =
+  '0xFc6d429BF9f505281E86FeE965dE94704DAF22F8' as const;
+
+export const SEALED_BID_AUCTION_ABI = [
+  {
+    name: 'submitBid',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [
+      {
+        name: 'encryptedBid',
+        type: 'tuple',
+        internalType: 'struct InEuint32',
+        components: InEuint32Components,
+      },
+    ],
+    outputs: [],
+  },
+  {
+    name: 'endEarly',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [],
+    outputs: [],
+  },
+  {
+    name: 'finalizeAuction',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [],
+    outputs: [],
+  },
+  {
+    name: 'checkWinStatus',
+    type: 'function',
+    stateMutability: 'nonpayable',
+    inputs: [],
+    outputs: [],
+  },
+  {
+    name: 'getWinStatus',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'bidder', type: 'address' }],
+    outputs: [{ name: '', type: 'bytes32', internalType: 'euint32' }],
+  },
+  {
+    name: 'getMyBid',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'bidder', type: 'address' }],
+    outputs: [{ name: '', type: 'bytes32', internalType: 'euint32' }],
+  },
+  {
+    name: 'hasBid',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'bidder', type: 'address' }],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    name: 'hasWinStatus',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [{ name: 'bidder', type: 'address' }],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    name: 'bidderCount',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    name: 'isActive',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    name: 'finalized',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'bool' }],
+  },
+  {
+    name: 'auctionEnd',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    name: 'availableSlots',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    name: 'getBidders',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'address[]' }],
+  },
+  {
+    name: 'owner',
+    type: 'function',
+    stateMutability: 'view',
+    inputs: [],
+    outputs: [{ name: '', type: 'address' }],
+  },
+  {
+    name: 'BidSubmitted',
+    type: 'event',
+    inputs: [
+      { name: 'bidder', type: 'address', indexed: true },
+      { name: 'timestamp', type: 'uint256', indexed: false },
+    ],
+  },
+  {
+    name: 'AuctionFinalized',
+    type: 'event',
+    inputs: [
+      { name: 'bidderCount', type: 'uint256', indexed: false },
+      { name: 'timestamp', type: 'uint256', indexed: false },
+    ],
+  },
+  {
+    name: 'WinStatusChecked',
+    type: 'event',
+    inputs: [
+      { name: 'bidder', type: 'address', indexed: true },
+      { name: 'timestamp', type: 'uint256', indexed: false },
+    ],
+  },
+] as const;

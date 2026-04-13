@@ -41,7 +41,7 @@ export default function DashboardPage() {
           daLastSync={daLastSync}
         />
 
-        <nav className="grid grid-cols-3 gap-4" aria-label="Module navigation">
+        <nav className="grid grid-cols-2 gap-4" aria-label="Module navigation">
           <a
             href="/compliance"
             className="rounded-xl border border-gray-800 bg-gray-900 p-5 transition hover:border-emerald-700"
@@ -57,6 +57,14 @@ export default function DashboardPage() {
             <div className="mb-2 text-2xl" aria-hidden="true">🔐</div>
             <div className="font-medium text-gray-200">FHE Rewards</div>
             <div className="mt-1 text-xs text-gray-500">View and claim encrypted balances</div>
+          </a>
+          <a
+            href="/auction"
+            className="rounded-xl border border-gray-800 bg-gray-900 p-5 transition hover:border-purple-700"
+          >
+            <div className="mb-2 text-2xl" aria-hidden="true">🏷</div>
+            <div className="font-medium text-gray-200">Sealed Bid Auction</div>
+            <div className="mt-1 text-xs text-gray-500">Bid for network slots with encrypted bids</div>
           </a>
           <a
             href="/devices"
