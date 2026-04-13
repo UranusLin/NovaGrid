@@ -4,11 +4,11 @@ import { useWallet } from '@provablehq/aleo-wallet-adaptor-react';
 import { useWalletModal } from '@provablehq/aleo-wallet-adaptor-react-ui';
 
 export function AleoWalletButton() {
-  const { connected, publicKey, disconnect, connecting } = useWallet();
+  const { connected, address, disconnect, connecting } = useWallet();
   const { setVisible } = useWalletModal();
 
-  if (connected && publicKey) {
-    const short = `${publicKey.slice(0, 6)}…${publicKey.slice(-4)}`;
+  if (connected && address) {
+    const short = `${address.slice(0, 6)}…${address.slice(-4)}`;
     return (
       <button
         onClick={() => disconnect()}
