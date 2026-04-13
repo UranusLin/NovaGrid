@@ -23,8 +23,6 @@ import {
 } from '@/lib/contracts';
 import { humanizeFheError } from '@/lib/fheErrors';
 
-const IS_DEPLOYED =
-  PRIVACY_LEADERBOARD_ADDRESS !== '0x0000000000000000000000000000000000000000';
 
 export function LeaderboardPanel() {
   const { address, isConnected } = useAccount();
@@ -66,7 +64,7 @@ export function LeaderboardPanel() {
     abi: PRIVACY_LEADERBOARD_ABI,
     functionName: 'nodeCount',
     chainId: sepolia.id,
-    query: { enabled: IS_DEPLOYED },
+    query: { enabled: true },
   });
 
   const { data: enrolled } = useReadContract({
@@ -75,7 +73,7 @@ export function LeaderboardPanel() {
     functionName: 'isEnrolled',
     args: address ? [address] : undefined,
     chainId: sepolia.id,
-    query: { enabled: IS_DEPLOYED && isConnected && !!address },
+    query: { enabled: isConnected && !!address },
   });
 
   const { data: rankAvailable } = useReadContract({
@@ -84,7 +82,7 @@ export function LeaderboardPanel() {
     functionName: 'hasRank',
     args: address ? [address] : undefined,
     chainId: sepolia.id,
-    query: { enabled: IS_DEPLOYED && isConnected && !!address },
+    query: { enabled: isConnected && !!address },
   });
 
   // Encrypted rank — readable only after computeMyRank tx confirmed
@@ -103,7 +101,7 @@ export function LeaderboardPanel() {
       },
       {
         readQueryOptions: {
-          enabled: IS_DEPLOYED && isConnected && !!address && (rankAvailable === true || isRankConfirmed),
+          enabled: isConnected && !!address && (rankAvailable === true || isRankConfirmed),
         },
       }
     );
@@ -150,27 +148,6 @@ export function LeaderboardPanel() {
         onSuccess: (hash) => setRankTxHash(hash),
         onError: (err) => setRankError(humanizeFheError(err)),
       }
-    );
-  }
-
-  // ── Render: not deployed ───────────────────────────────────────────────────
-
-  if (!IS_DEPLOYED) {
-    return (
-      <div className="rounded-lg border border-gray-800 bg-gray-900/50 px-4 py-4 text-center">
-        <p className="text-sm text-gray-500">
-          PrivacyLeaderboard contract not yet deployed.
-        </p>
-        <p className="mt-1 text-xs text-gray-600">
-          Run{' '}
-          <code className="rounded bg-gray-800 px-1 py-0.5 text-gray-400">
-            npm run deploy:sepolia
-          </code>{' '}
-          in <code className="rounded bg-gray-800 px-1 py-0.5 text-gray-400">contracts/fhenix-settlement</code>,
-          then update <code className="rounded bg-gray-800 px-1 py-0.5 text-gray-400">PRIVACY_LEADERBOARD_ADDRESS</code> in{' '}
-          <code className="rounded bg-gray-800 px-1 py-0.5 text-gray-400">src/lib/contracts.ts</code>.
-        </p>
-      </div>
     );
   }
 

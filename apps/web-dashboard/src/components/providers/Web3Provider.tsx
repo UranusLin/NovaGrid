@@ -43,7 +43,6 @@ function CofheInner({ children }: { children: React.ReactNode }) {
           autogeneratePermits: true,
           position: 'bottom-right',
           initialTheme: 'dark',
-          zIndex: -1,
         },
       }),
     []
