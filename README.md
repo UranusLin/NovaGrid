@@ -90,6 +90,7 @@ Leo program `compliance.aleo` deployed on Aleo Testnet:
 | `compute_node_score` | Both bools, uptime, hashrate_score, device_id | — | u64 score |
 
 **Deployed:** `compliance.aleo` on Aleo Testnet  
+**Address:** `aleo173cytqrq75ahm8t9l72kp3cr3uded75ac23xvylyks0eztt7hygq49w386`  
 **Deploy TX:** `at1pzqn6ea2gh9sne39fg20896rkhgevnvkqyda7wt84j58wz4c8grqs0dkca`
 
 ### FHE Settlement — `contracts/fhenix-settlement/`
