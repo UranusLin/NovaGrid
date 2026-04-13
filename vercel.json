@@ -1,0 +1,6 @@
+{
+  "buildCommand": "pnpm --filter web-dashboard run build",
+  "installCommand": "pnpm install",
+  "outputDirectory": "apps/web-dashboard/.next",
+  "framework": "nextjs"
+}
