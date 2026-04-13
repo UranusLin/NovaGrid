@@ -1,5 +1,5 @@
+import Link from 'next/link';
 import { ComplianceProver } from '@/components/aleo/ComplianceProver';
-import { WalletButton } from '@/components/aleo/WalletButton';
 
 export const metadata = {
   title: 'ZK Compliance — NovaGrid',
@@ -10,12 +10,11 @@ export default function CompliancePage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
       <div className="mb-6">
-        <a href="/" className="text-xs text-gray-500 hover:text-gray-300">
+        <Link href="/dashboard" className="text-xs text-gray-500 hover:text-gray-300">
           ← Dashboard
-        </a>
-        <div className="mt-2 flex items-center justify-between">
+        </Link>
+        <div className="mt-2">
           <h1 className="text-2xl font-bold text-gray-100">ZK Compliance Prover</h1>
-          <WalletButton />
         </div>
         <p className="mt-1 text-sm text-gray-500">
           Prove your device is compliant without revealing its location or performance metrics.

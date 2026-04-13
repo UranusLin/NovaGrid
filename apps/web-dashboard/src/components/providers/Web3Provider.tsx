@@ -43,6 +43,7 @@ function CofheInner({ children }: { children: React.ReactNode }) {
           autogeneratePermits: true,
           position: 'bottom-right',
           initialTheme: 'dark',
+          zIndex: -1,
         },
       }),
     []
@@ -70,7 +71,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
             wallets={wallets}
             network={Network.TESTNET}
             decryptPermission={DecryptPermission.UponRequest}
-            autoConnect={false}
+            autoConnect={true}
             onError={(error: Error) => console.error('Aleo wallet error:', error)}
           >
             <WalletModalProvider>{children}</WalletModalProvider>

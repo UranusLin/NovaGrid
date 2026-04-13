@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type { ProofState } from '@/hooks/useAleoWorker';
 
 type Props = { state: ProofState };
@@ -58,12 +59,12 @@ export function ProofStatus({ state }: Props) {
               <p className="mb-2 text-xs text-emerald-400">
                 Trust score saved locally. Use it to weight your encrypted reward deposit on Fhenix.
               </p>
-              <a
+              <Link
                 href="/rewards"
                 className="inline-flex items-center gap-1 rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-600"
               >
                 Use Score in FHE Rewards →
-              </a>
+              </Link>
             </div>
           )}
         </div>

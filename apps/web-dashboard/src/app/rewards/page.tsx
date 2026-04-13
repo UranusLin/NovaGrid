@@ -1,10 +1,4 @@
-import dynamic from 'next/dynamic';
-
-// @cofhe/react accesses window at module init — must be loaded client-only.
-const RewardsPageContent = dynamic(
-  () => import('./RewardsPageContent').then((m) => ({ default: m.RewardsPageContent })),
-  { ssr: false }
-);
+import { RewardsClientShell } from './RewardsClientShell';
 
 export const metadata = {
   title: 'FHE Rewards — NovaGrid',
@@ -12,5 +6,5 @@ export const metadata = {
 };
 
 export default function RewardsPage() {
-  return <RewardsPageContent />;
+  return <RewardsClientShell />;
 }

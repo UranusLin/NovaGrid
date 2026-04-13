@@ -7,30 +7,41 @@ async function main() {
   const balance = await ethers.provider.getBalance(deployer.address);
   console.log("Account balance:", ethers.formatEther(balance), "ETH");
 
-  // Deploy NovaVault — initially set deployer as distributor,
-  // then update to RewardDistributor after it is deployed.
+  // ── NovaVault ──────────────────────────────────────────────────────────────
+  // Deploy with deployer as temporary distributor; updated after RewardDistributor deploys.
   const NovaVault = await ethers.getContractFactory("NovaVault");
   const vault = await NovaVault.deploy(deployer.address);
   await vault.waitForDeployment();
   const vaultAddress = await vault.getAddress();
   console.log("NovaVault deployed to:", vaultAddress);
 
-  // Deploy RewardDistributor, pointing at NovaVault
+  // ── RewardDistributor ──────────────────────────────────────────────────────
   const RewardDistributor = await ethers.getContractFactory("RewardDistributor");
   const distributor = await RewardDistributor.deploy(vaultAddress);
   await distributor.waitForDeployment();
   const distributorAddress = await distributor.getAddress();
   console.log("RewardDistributor deployed to:", distributorAddress);
 
-  // Update NovaVault distributor to RewardDistributor
+  // Wire up: set vault's distributor to RewardDistributor
   const tx = await vault.setDistributor(distributorAddress);
   await tx.wait();
-  console.log("NovaVault distributor set to RewardDistributor");
+  console.log("NovaVault distributor updated to RewardDistributor");
 
-  console.log("\nDeployment complete:");
-  console.log("  Network:            ", hre.network.name);
-  console.log("  NovaVault:          ", vaultAddress);
-  console.log("  RewardDistributor:  ", distributorAddress);
+  // ── PrivacyLeaderboard ─────────────────────────────────────────────────────
+  // Standalone — no constructor args needed.
+  const PrivacyLeaderboard = await ethers.getContractFactory("PrivacyLeaderboard");
+  const leaderboard = await PrivacyLeaderboard.deploy();
+  await leaderboard.waitForDeployment();
+  const leaderboardAddress = await leaderboard.getAddress();
+  console.log("PrivacyLeaderboard deployed to:", leaderboardAddress);
+
+  // ── Summary ───────────────────────────────────────────────────────────────
+  console.log("\n✅ Deployment complete:");
+  console.log("  Network:              ", hre.network.name);
+  console.log("  NovaVault:            ", vaultAddress);
+  console.log("  RewardDistributor:    ", distributorAddress);
+  console.log("  PrivacyLeaderboard:   ", leaderboardAddress);
+  console.log("\nUpdate contracts.ts with the PrivacyLeaderboard address above.");
 }
 
 main().catch((err) => {

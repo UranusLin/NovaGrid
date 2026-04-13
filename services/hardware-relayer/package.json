@@ -6,7 +6,7 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch --clear-screen=false --watch ./src ./src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "node --experimental-vm-modules node_modules/.bin/jest"

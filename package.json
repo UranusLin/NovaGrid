@@ -26,6 +26,9 @@
       "keccak",
       "secp256k1",
       "utf-8-validate"
-    ]
+    ],
+    "patchedDependencies": {
+      "@cofhe/react": "patches/@cofhe__react.patch"
+    }
   }
 }

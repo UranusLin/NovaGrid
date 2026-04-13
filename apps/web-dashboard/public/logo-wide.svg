@@ -1,0 +1,53 @@
+<svg viewBox="0 0 180 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur-glow2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- ── Icon mark (40x40) ───────────────────────────────────────────── -->
+  <!-- Outer hex ring -->
+  <line x1="33" y1="20"   x2="26.5" y2="31.3" stroke="#1E40AF" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="26.5" y1="31.3" x2="13.5" y2="31.3" stroke="#1E40AF" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="13.5" y1="31.3" x2="7"   y2="20"   stroke="#1E40AF" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="7"   y1="20"   x2="13.5" y2="8.7"  stroke="#1E40AF" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="13.5" y1="8.7"  x2="26.5" y2="8.7"  stroke="#1E40AF" stroke-width="1" stroke-opacity="0.6"/>
+  <line x1="26.5" y1="8.7"  x2="33"   y2="20"   stroke="#1E40AF" stroke-width="1" stroke-opacity="0.6"/>
+  <!-- Spokes -->
+  <line x1="20" y1="20" x2="33"   y2="20"   stroke="#2563EB" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="20" y1="20" x2="26.5" y2="31.3" stroke="#2563EB" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="20" y1="20" x2="13.5" y2="31.3" stroke="#2563EB" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="20" y1="20" x2="7"    y2="20"   stroke="#2563EB" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="20" y1="20" x2="13.5" y2="8.7"  stroke="#2563EB" stroke-width="1" stroke-opacity="0.7"/>
+  <line x1="20" y1="20" x2="26.5" y2="8.7"  stroke="#2563EB" stroke-width="1" stroke-opacity="0.7"/>
+  <!-- Outer nodes -->
+  <circle cx="33"   cy="20"   r="2.2" fill="#3B82F6"/>
+  <circle cx="26.5" cy="31.3" r="2.2" fill="#3B82F6"/>
+  <circle cx="13.5" cy="31.3" r="2.2" fill="#3B82F6"/>
+  <circle cx="7"    cy="20"   r="2.2" fill="#3B82F6"/>
+  <circle cx="13.5" cy="8.7"  r="2.2" fill="#3B82F6"/>
+  <circle cx="26.5" cy="8.7"  r="2.2" fill="#3B82F6"/>
+  <!-- Center glow + node -->
+  <circle cx="20" cy="20" r="8" fill="url(#glow2)"/>
+  <circle cx="20" cy="20" r="3.5" fill="#93C5FD" filter="url(#blur-glow2)"/>
+  <circle cx="20" cy="20" r="2.5" fill="#BFDBFE"/>
+
+  <!-- ── Wordmark ─────────────────────────────────────────────────────── -->
+  <text x="46" y="26"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="17"
+    font-weight="700"
+    letter-spacing="-0.3"
+    fill="#F9FAFB">Nova</text>
+  <text x="93" y="26"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="17"
+    font-weight="700"
+    letter-spacing="-0.3"
+    fill="#60A5FA">Grid</text>
+</svg>

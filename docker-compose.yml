@@ -1,0 +1,22 @@
+services:
+  hardware-relayer:
+    build:
+      context: .
+      dockerfile: services/hardware-relayer/Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: "3001"
+      ALEO_PROGRAM_PATH: /app/contracts/aleo-compliance
+      # 以下從 .env 讀取，不要寫死在這裡
+      EVM_PRIVATE_KEY: ${EVM_PRIVATE_KEY}
+      SEPOLIA_RPC_URL: ${SEPOLIA_RPC_URL}
+      REWARD_DISTRIBUTOR_ADDRESS: ${REWARD_DISTRIBUTOR_ADDRESS}
+      API_KEY: ${API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

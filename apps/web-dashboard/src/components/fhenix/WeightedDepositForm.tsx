@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useAccount, useChainId, useSwitchChain, useWaitForTransactionReceipt } from 'wagmi';
 import { sepolia } from 'viem/chains';
@@ -119,9 +120,9 @@ export function WeightedDepositForm() {
           ) : (
             <span className="text-xs text-gray-600">
               No proof yet —{' '}
-              <a href="/compliance" className="underline text-gray-500 hover:text-gray-300">
+              <Link href="/compliance" className="underline text-gray-500 hover:text-gray-300">
                 generate one
-              </a>
+              </Link>
             </span>
           )}
         </div>

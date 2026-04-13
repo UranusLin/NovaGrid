@@ -50,3 +50,9 @@ coverage/
 .vercel
 *.pem
 contracts/fhenix-settlement/.env
+
+# Claude Code
+.claude/
+.agents/
+settings.json
+skills-lock.json
